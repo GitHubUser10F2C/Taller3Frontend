@@ -15,7 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: CI=false npm install && npm run build
+      - run: |
+          echo "CI=false" >> $GITHUB_ENV
+          npx update-browserslist-db@latest
+          npm install && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
