@@ -1,42 +1,18 @@
-name: Deploy to Firebase Hosting
-
-on:
-  push:
-    branches:
-      - main  # Se activará cada vez que haya un push en la rama principal
-
+name: Deploy to Firebase Hosting on PR
+on: pull_request
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
 jobs:
-  deploy:
-    runs-on: ubuntu-latest  # El trabajo se ejecutará en un contenedor de Ubuntu
-
+  build_and_preview:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
     steps:
-      # Paso 1: Obtén el código de tu repositorio
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      # Paso 2: Configura Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - run: npm ci && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          node-version: '18.19.0'  # Puedes usar la versión que estés utilizando en tu proyecto
-
-      # Paso 3: Instala las dependencias
-      - name: Install dependencies
-        run: |
-          npm install
-
-      # Paso 4: Haz el build de la aplicación (esto genera los archivos estáticos en /build)
-      - name: Build the project
-        run: |
-          npm run build
-
-      # Paso 5: Inicia sesión en Firebase
-      - name: Firebase login
-        uses: wzieba/Firebase-Action@v2
-        with:
-          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
-
-      # Paso 6: Desplegar en Firebase Hosting
-      - name: Deploy to Firebase Hosting
-        run: |
-          firebase deploy --only hosting
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CATEDRA3FRONTEND }}
+          projectId: catedra3frontend
