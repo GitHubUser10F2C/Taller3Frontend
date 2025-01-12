@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          echo "CI=" >> $GITHUB_ENV
+          echo "CI=''" >> $GITHUB_ENV
           npm install && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
