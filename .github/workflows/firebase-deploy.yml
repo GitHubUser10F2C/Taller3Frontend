@@ -32,8 +32,7 @@ jobs:
 
       # Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CATEDRA3FRONTEND }}
-          projectId: catedra3frontend
+        run: |
+          npx firebase-tools@latest hosting:channel:deploy live --project catedra3frontend --expires 7d --json
+        env:
+          FIREBASE_SERVICE_ACCOUNT_CATEDRA3FRONTEND: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CATEDRA3FRONTEND }}
